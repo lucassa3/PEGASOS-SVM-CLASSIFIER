@@ -3,34 +3,36 @@
 #include <iostream>
 #include <string>
 #include <time.h>
+#include <algorithm>
 #include "svm_classifier.hpp"
-
-#define DATASET_LENGTH 2000
-#define FEATURE_NUM 6
+#include "data_reader.hpp"
 
 using namespace std;
 
-double rand_float( double low, double high ) {
-    return ( ( double )rand() * ( high - low ) ) / ( double )RAND_MAX + low;
-}
-
-void generate_random_dataset(vector<vector<double>> & data, vector<int> & label) {
+double rand_float(double low, double high) {
     
-    for (unsigned int i = 0; i < DATASET_LENGTH; i++) {
+    return ((double)rand() * (high - low)) / (double)RAND_MAX + low;
+} 
+
+void generate_random_dataset(vector<vector<double>> & data, vector<int> & label) {  
+    
+    for (unsigned int i = 0; i < data.size(); i++) {
+        
         vector<double> aux_vec;
 
-        for (unsigned int j = 0; j < FEATURE_NUM; j++) {
-            if (j == FEATURE_NUM -1) {
+        for (unsigned int j = 0; j < data[0].size(); j++) {
+            
+            if (j == data[0].size() -1) {
                 aux_vec.push_back(1);
             }
 
             else {
                 if (i%2) {
-                    aux_vec.push_back(rand_float(0,100));
+                    aux_vec.push_back(rand_float(0,30));
                 }
 
                 else {
-                    aux_vec.push_back(rand_float(100,200));
+                    aux_vec.push_back(rand_float(10,40));
                 }
             }    
         }
@@ -45,67 +47,52 @@ void generate_random_dataset(vector<vector<double>> & data, vector<int> & label)
             label.push_back(-1);
         }
     }
-
 }
 
 
 int main(int argc, char *argv[]) {
 
-
-    vector<vector<double>> feature_set;
-    vector<int> label_set;
-
-    generate_random_dataset(feature_set, label_set);
-
-    vector<vector<double>> feature_set2;
-    vector<int> label_set2;
-
-    for (unsigned int i = 0; i < DATASET_LENGTH; i++) {
-        vector<double> aux_vec;
-
-        for (unsigned int j = 0; j < FEATURE_NUM; j++) {
-            if (j == FEATURE_NUM -1) {
-                aux_vec.push_back(1);
-            }
-
-            else {
-                if (i%2) {
-                    aux_vec.push_back(rand_float(0,105));
-                }
-
-                else {
-                    aux_vec.push_back(rand_float(95,200));
-                }
-            }    
-        }
-
-        feature_set2.push_back(aux_vec);
-        if (i%2) {
-            label_set2.push_back(1);
-        }
-
-        else {
-            label_set2.push_back(-1);
-        }
-    }
-
-    for (unsigned int i = 0; i < DATASET_LENGTH; i++) {
-        vector<double> aux_vec;
-
-        for (unsigned int j = 0; j < FEATURE_NUM; j++) {
-                cout << feature_set[i][j] << " ";
-        }
-
-        cout << endl;
-
-        cout << "label: " << label_set[i] << endl;
-    }
-
-    SVMClassifier* svm_clf = new SVMClassifier(0.01, 100000, time(NULL));
-
-    svm_clf->fit(feature_set, label_set);
-    vector<int> oi = svm_clf->predict(feature_set2);
-    cout << svm_clf->accuracy(label_set2, oi) << endl;
+    vector<vector<double>> data = read_data("../diabetes.csv", 500000,  0);
     
+    random_shuffle(data.begin(), data.end());
+ 
+    /*for(unsigned int i = 0; i < data.size(); i++) {
+        for(unsigned int j = 0; j < data[i].size(); j++) cout << data[i][j] << " ";
+        cout << endl;
+    }*/
+    
+    vector<double> labels = set_labels(data);
+
+    //for(unsigned int j = 0; j < labels.size(); j++) cout << labels[j] << endl;
+
+    
+
+    vector<vector<double>> x_train(data.begin(), data.begin() + data.size()/2);
+    vector<vector<double>> x_test(data.begin() + data.size()/2, data.end());
+
+    vector<int> y_train(labels.begin(), labels.begin() + labels.size()/2);
+    vector<int> y_test(labels.begin() + labels.size()/2, labels.end());
+
+
+    double total_acc = 0;
+
+    for (unsigned int i = 0; i < 20; i++) {
+
+        SVMClassifier* svm_clf = new SVMClassifier(0.0001, 100000000, time(NULL));
+        cout << "seed: " << time(NULL) << endl;
+
+        svm_clf->fit(x_train, y_train);
+
+        vector<int> y_pred = svm_clf->predict(x_test);
+
+        double cur_acc = svm_clf->accuracy(y_test, y_pred);
+
+        total_acc += cur_acc;
+
+        cout << "accurarcy: "<< cur_acc  << endl;
+    }
+
+    cout << "mean accuracy: "<< total_acc/20  << endl;
+
     return 0;
 }

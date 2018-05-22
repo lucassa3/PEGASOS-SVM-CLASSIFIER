@@ -21,7 +21,7 @@ void SVMClassifier::fit(vector<vector<double>> & data, vector<int> & label) {
 
         unsigned int idx = rand() % data.size();
 
-        double nt = 1/(this->c*t);
+        double nt = 1/(c*t);
 
         vector<double> xi = data[idx];
 
@@ -48,9 +48,9 @@ void SVMClassifier::fit(vector<vector<double>> & data, vector<int> & label) {
         w = next_w;
     }
 
-    for(unsigned int i = 0; i < w.size(); i++) {
+    /*for(unsigned int i = 0; i < w.size(); i++) {
         cout << "w" << i << " = " << w[i] << " ";
-    }
+    }*/
 
     cout << endl;
 }
@@ -78,13 +78,16 @@ vector<int> SVMClassifier::predict(vector<vector<double>> & data) {
     return predicted_labels;
 }
 
-double SVMClassifier::accuracy(vector<int> label, vector<int> pred_label) {
+double SVMClassifier::accuracy(vector<int> & label, vector<int> & pred_label) {
     int correct_pred = 0;
+
     
     for(unsigned int i = 0; i < label.size(); i++) {
         if (label[i] == pred_label[i]) {
             correct_pred += 1;
+            //cout<< "acertou" <<endl;
         }
+        //else cout<< "erou" <<endl;
     }
 
     return (double) correct_pred/label.size();

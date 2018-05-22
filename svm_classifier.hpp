@@ -21,7 +21,7 @@ public:
 
   vector<int> predict(vector<vector<double>> & data);
 
-  double  accuracy(vector<int> label, vector<int> pred_label);
+  double  accuracy(vector<int> & label, vector<int> & pred_label);
 
 };
 
