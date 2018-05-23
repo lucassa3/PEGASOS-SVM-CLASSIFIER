@@ -52,7 +52,7 @@ void generate_random_dataset(vector<vector<double>> & data, vector<int> & label)
 
 int main(int argc, char *argv[]) {
 
-    vector<vector<double>> data = read_data("../diabetes.csv", 500000,  0);
+    vector<vector<double>> data = read_data("../diabetes.csv", 5000000,  0);
     
     random_shuffle(data.begin(), data.end());
  
@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
 
     for (unsigned int i = 0; i < 20; i++) {
 
-        SVMClassifier* svm_clf = new SVMClassifier(0.0001, 100000000, time(NULL));
+        SVMClassifier* svm_clf = new SVMClassifier(0.001, 1000000, time(NULL));
         cout << "seed: " << time(NULL) << endl;
 
         svm_clf->fit(x_train, y_train);
@@ -86,6 +86,8 @@ int main(int argc, char *argv[]) {
         vector<int> y_pred = svm_clf->predict(x_test);
 
         double cur_acc = svm_clf->accuracy(y_test, y_pred);
+
+        //for(unsigned int j = 0; j < y_pred.size(); j++) cout << y_pred[j] << endl;
 
         total_acc += cur_acc;
 
