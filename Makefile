@@ -1,4 +1,4 @@
-CFLAGS = -std=c++11 -Wall
+CFLAGS = -std=c++11 -Wall -I ../mnist-master/include/mnist
 
 all: main.o svm_classifier.o data_reader.o
 	g++ $(CFLAGS) $^ -o main 
