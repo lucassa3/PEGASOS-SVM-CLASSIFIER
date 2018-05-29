@@ -1,10 +1,10 @@
 CFLAGS = -std=c++11
 
-all: main.o 
-	nvcc $(CFLAGS) $^ -o main 
+all: test.o 
+	nvcc $(CFLAGS) $^ -o test 
 
-main.o: main.cu
-	nvcc $(CFLAGS) -c main.cu
+test.o: test.cu
+	nvcc $(CFLAGS) -c test.cu
 
 clean:
-	rm -rf *.o main
+	rm -rf *.o test
