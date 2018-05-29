@@ -40,7 +40,7 @@ void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vec
         thrust::transform(xi.begin(), xi.end(), w.begin(), temp.begin(), thrust::multiplies<double>());
         cout << "f";
         double dot_product = thrust::reduce(temp.begin(), temp.end(), 0, thrust::plus<double>());
-        cout << "g";
+        cout << dot_product;
         thrust::device_vector<double> next_w(9);
         cout << "h";
         cout << label[idx];
