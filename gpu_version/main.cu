@@ -7,6 +7,7 @@
 #include "svm_classifier.hpp"
 #include "data_reader.hpp"
 #include <thrust/device_vector.h>
+#include <thrust/host_vector.h>
 #include <thrust/transform.h>
 #include <thrust/sequence.h>
 #include <thrust/copy.h>
