@@ -32,4 +32,5 @@
 *.app
 
 .ipynb_checkpoints/
+.vscode/
 
