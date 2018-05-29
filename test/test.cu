@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
         for(unsigned int j = 0; j < data[i].size(); j++) cout << data[i][j] << " ";
         cout << endl;
     }*/
-    thrust::device_vector<thrust::device_vector<double>> data;
+    thrust::device_vector<double> data;
 
 
     // for (unsigned int i = 0; i < h_data.size(); i++) {
@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
 
     for (vector<double> sample: h_data) {
         thrust::device_vector<double> aux(sample);
-        data.push_back(aux);   
+        data.insert(data.end(), aux.begin(), aux.end());   
     }
     
 
