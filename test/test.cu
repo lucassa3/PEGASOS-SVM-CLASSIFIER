@@ -129,8 +129,8 @@ int main(int argc, char *argv[]) {
     
     
 
-    //thrust::device_vector<thrust::device_vector<double>> data(h_data);
-    //thrust::device_vector<double> labels(h_labels);
+    thrust::device_vector<thrust::device_vector<double>> data(h_data);
+    thrust::device_vector<double> labels(h_labels);
 
     //for(unsigned int j = 0; j < labels.size(); j++) cout << labels[j] << endl;
 
