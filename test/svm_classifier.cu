@@ -29,6 +29,7 @@ void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vec
 
         unsigned int idx = rand() % label.size();
         //cout << "b";
+        int cur_label = label[idx];
 
         double nt = 1/(c*t);
         //cout << "c";
@@ -41,23 +42,37 @@ void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vec
         //cout << "f";
         double dot_product = thrust::reduce(temp.begin(), temp.end(), 0, thrust::plus<double>());
         //cout << dot_product;
-        thrust::device_vector<double> next_w(9);
+        thrust::device_vector<double> next_w(9, 0);
         //cout << "h";
         //cout << label[idx];
-        if(dot_product*label[idx] < 1) {
-            //cout << "i";
-            for(unsigned int k = 0; k < xi.size(); k++) {
-                //cout << "j";
-                next_w[k] = w[k] - nt*c*w[k] + nt*label[idx]*xi[k];
-            }
+        
+        
+        //nt*c*W
+        thrust::device_vector<double> nt_c_w(xi.size());
+        thrust::fill(nt_c_w.begin(), nt_c_w.end(), nt*c);
+        thrust::transform(w.begin(), w.end(), nt_c_w.begin(), nt_c_w.begin(), thrust::multiplies<double>());
+
+        //nt*cur_label*XI
+        thrust::device_vector<double> nt_label_xi(xi.size());
+        thrust::fill(nt_label_xi.begin(), nt_label_xi.end(), nt*cur_label);
+        thrust::transform(xi.begin(), xi.end(), nt_label_xi.begin(), nt_label_xi.begin(), thrust::multiplies<double>());
+
+        
+
+
+        if(dot_product*cur_label < 1) {
+            //next_w = + nt*label[idx]*xi[k] - nt*c*w[k] + w[k] 
+            thrust::transform(nt_label_xi.begin(), nt_label_xi.end(), next_w.begin(), next_w.begin(), thrust::plus<double>());
+            thrust::transform(nt_c_w.begin(), nt_c_w.end(), next_w.begin(), next_w.begin(), thrust::minus<double>());
+            thrust::transform(w.begin(), w.end(), next_w.begin(), next_w.begin(), thrust::plus<double>());
         }
 
+
+
         else {
-            //cout << "i";
-            for(unsigned int k = 0; k < xi.size(); k++) {
-                //cout << "j";
-                next_w[k] = w[k] - nt*c*w[k];
-            }
+            //next_w = - nt*c*w[k] + w[k]
+            thrust::transform(nt_c_w.begin(), nt_c_w.end(), next_w.begin(), next_w.begin(), thrust::minus<double>());
+            thrust::transform(w.begin(), w.end(), next_w.begin(), next_w.begin(), thrust::plus<double>());
         }
 
         w = next_w;
@@ -82,6 +97,7 @@ thrust::device_vector<int> SVMClassifier::predict(thrust::device_vector<double> 
         thrust::transform(xi.begin(), xi.end(), w.begin(), temp.begin(), thrust::multiplies<double>());
 
         double dot_product = thrust::reduce(temp.begin(), temp.end(), 0, thrust::plus<double>());
+        
 
         if (dot_product >= 0) {
             predicted_labels.push_back(1);
