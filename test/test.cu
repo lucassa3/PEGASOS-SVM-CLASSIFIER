@@ -138,11 +138,14 @@ int main(int argc, char *argv[]) {
         thrust::device_vector<double> aux(sample);
         data.insert(data.end(), aux.begin(), aux.end());   
     }
+
+    thrust::copy(data.begin(), data.begin()+5, std::ostream_iterator<int>(std::cout, "\n"));
     
 
     //thrust::device_vector<thrust::device_vector<double>> data(h_data);
     thrust::device_vector<double> labels(h_labels);
-
+    thrust::copy(labels.begin(), labels.begin()+1, std::ostream_iterator<int>(std::cout, "\n"));
+    
     //for(unsigned int j = 0; j < labels.size(); j++) cout << labels[j] << endl;
 
     
