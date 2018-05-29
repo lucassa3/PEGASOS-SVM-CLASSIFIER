@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 
     
 
-    thrust::device_vector<thrust::device_vector<double>> x_train(data.begin(), data.begin() + data.size()/2);
+    /*thrust::device_vector<thrust::device_vector<double>> x_train(data.begin(), data.begin() + data.size()/2);
     thrust::device_vector<thrust::device_vector<double>> x_test(data.begin() + data.size()/2, data.end());
 
     thrust::device_vector<int> y_train(labels.begin(), labels.begin() + labels.size()/2);
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
         cout << "accurarcy: "<< cur_acc  << endl;
     }
 
-    cout << "mean accuracy: "<< total_acc/20  << endl;
+    cout << "mean accuracy: "<< total_acc/20  << endl;*/
 
     return 0;
 }
