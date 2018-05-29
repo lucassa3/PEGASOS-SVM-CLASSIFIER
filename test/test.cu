@@ -76,13 +76,43 @@ vector<vector<double>> read_data(const char * filename, const unsigned int data_
 }
 
 
+vector<double> set_labels(vector<vector<double>> & data) {
+    
+    vector<double> labels;
+
+    double total = 0;
+    
+    for (unsigned int i = 0; i < data.size(); i++) {
+        
+        if (data[i][data[i].size()-1] == 1) {
+            labels.push_back(1);
+            total+=1;
+
+        }
+
+        else labels.push_back(-1);
+    }
+    cout << "distribuicao: " << total/data.size() << endl;
+    cout << data[0].size()-1 << endl; //8
+
+
+    //replace data class row for bias
+    for (unsigned int i = 0; i < data.size(); i++) {
+        
+        data[i][data[0].size()-1] = 1;
+    }
+
+    return labels;
+}
+
+
 int main(int argc, char *argv[]) {
     
     vector<vector<double>> h_data = read_data("../datasets/diabetes.csv", 5000000,  0);
     
     random_shuffle(h_data.begin(), h_data.end());
 
-    //thrust::host_vector<double> h_labels = set_labels(h_data);
+    vector<double> h_labels = set_labels(h_data);
     
     
 
