@@ -1,7 +1,7 @@
 #include <random>
 #include <vector>
 #include <iostream>
-#include <ifstream>
+#include <fstream>
 #include <boost/algorithm/string.hpp>
 #include <string>
 #include <time.h>
