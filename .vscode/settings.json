@@ -51,6 +51,7 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "csignal": "cpp",
-        "cstdarg": "cpp"
+        "cstdarg": "cpp",
+        "*.ipp": "cpp"
     }
 }

@@ -6,7 +6,6 @@
 #include <algorithm>
 #include "svm_classifier.hpp"
 #include "data_reader.hpp"
-#include "../mnist-master/include/mnist/mnist_reader.hpp"
 
 using namespace std;
 
@@ -52,18 +51,8 @@ void generate_random_dataset(vector<vector<double>> & data, vector<int> & label)
 
 
 int main(int argc, char *argv[]) {
-
-    mnist::MNIST_dataset<std::vector, std::vector<uint8_t>, uint8_t> dataset =
-    mnist::read_dataset<std::vector, std::vector, uint8_t, uint8_t>("../mnist-master");
-
-    std::cout << "Nbr of training images = " << dataset.training_images.size() << std::endl;
-    std::cout << "Nbr of training labels = " << dataset.training_labels.size() << std::endl;
-    std::cout << "Nbr of test images = " << dataset.test_images.size() << std::endl;
-    std::cout << "Nbr of test labels = " << dataset.test_labels.size() << std::endl;
-
-    vector<vector<double>> data = read_data("../iris.data.txt", 5000000,  0);
-
-    cout << "OOOOOOO" << dataset.training_images[20][0] << endl;
+    
+    vector<vector<double>> data = read_data("../datasets/diabetes.csv", 5000000,  0);
 
     // for(unsigned int i = 0; i < dataset.training_images.size(); i++) {
     //     for(unsigned int j = 0; j < dataset.training_images[i].size(); j++) cout << dataset.training_images[i][j] << " ";
@@ -93,7 +82,7 @@ int main(int argc, char *argv[]) {
 
     for (unsigned int i = 0; i < 20; i++) {
 
-        SVMClassifier* svm_clf = new SVMClassifier(0.001, 10000000, time(NULL));
+        SVMClassifier* svm_clf = new SVMClassifier(0.001, 1000000, time(NULL));
         cout << "seed: " << time(NULL) << endl;
 
         svm_clf->fit(x_train, y_train);
