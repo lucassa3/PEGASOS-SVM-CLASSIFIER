@@ -24,9 +24,12 @@ double rand_float(double low, double high) {
 int main(int argc, char *argv[]) {
     
     vector<vector<double>> h_data = read_data("../datasets/diabetes.csv", 5000000,  0);
-    random_shuffle(h_data.begin(), h_data.end());
     
-    thrust::device_vector<double> data (h_data);
+    random_shuffle(h_data.begin(), h_data.end());
+
+    vector<double> h_labels = set_labels(h_data);
+    
+    
 
     // for(unsigned int i = 0; i < dataset.training_images.size(); i++) {
     //     for(unsigned int j = 0; j < dataset.training_images[i].size(); j++) cout << dataset.training_images[i][j] << " ";
@@ -39,7 +42,10 @@ int main(int argc, char *argv[]) {
         cout << endl;
     }*/
     
-    thrust::device_vector<double> labels = set_labels(data);
+    
+
+    thrust::device_vector<double> data(h_data);
+    thrust::device_vector<double> labels(h_labels);
 
     //for(unsigned int j = 0; j < labels.size(); j++) cout << labels[j] << endl;
 

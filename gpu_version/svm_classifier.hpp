@@ -25,7 +25,7 @@ public:
 
   void fit(thrust::device_vector<thrust::device_vector<double>> & data, thrust::device_vector<int> & label);
 
-  vector<int> predict(thrust::device_vector<thrust::device_vector<double>> & data);
+  thrust::device_vector<int> predict(thrust::device_vector<thrust::device_vector<double>> & data);
 
   double  accuracy(thrust::device_vector<int> & label, thrust::device_vector<int> & pred_label);
 
