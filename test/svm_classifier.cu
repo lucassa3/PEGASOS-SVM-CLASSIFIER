@@ -44,13 +44,17 @@ void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vec
         thrust::device_vector<double> next_w(9);
         cout << "h";
         if(dot_product*label[idx] < 1) {
+            cout << "i";
             for(unsigned int k = 0; k < xi.size(); k++) {
+                cout << "j";
                 next_w[k] = w[k] - nt*c*w[k] + nt*label[idx]*xi[k];
             }
         }
 
         else {
+            cout << "i";
             for(unsigned int k = 0; k < xi.size(); k++) {
+                cout << "j";
                 next_w[k] = w[k] - nt*c*w[k];
             }
         }
