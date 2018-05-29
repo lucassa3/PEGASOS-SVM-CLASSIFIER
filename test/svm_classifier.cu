@@ -23,23 +23,26 @@ void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vec
     srand(seed);
     
     w.resize(9,0);
+    cout << "a";
     
     for(unsigned int t = 1; t < epochs; t++) {
 
         unsigned int idx = rand() % data.size();
+        cout << "b";
 
         double nt = 1/(c*t);
+        cout << "c";
 
         thrust::device_vector<double> xi(data.begin()+(idx*9), data.begin()+(idx*9)+(9));
-
+        cout << "d";
         thrust::device_vector<double> temp(xi.size(), 0);
-
+        cout << "e";
         thrust::transform(xi.begin(), xi.end(), w.begin(), temp.begin(), thrust::multiplies<double>());
-
+        cout << "f";
         double dot_product = thrust::reduce(temp.begin(), temp.end(), 0, thrust::plus<double>());
-
+        cout << "g";
         thrust::device_vector<double> next_w(9);
-
+        cout << "h";
         if(dot_product*label[idx] < 1) {
             for(unsigned int k = 0; k < xi.size(); k++) {
                 next_w[k] = w[k] - nt*c*w[k] + nt*label[idx]*xi[k];
