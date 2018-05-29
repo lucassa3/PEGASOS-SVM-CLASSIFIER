@@ -19,10 +19,10 @@ SVMClassifier::SVMClassifier(double c, unsigned int epochs, unsigned int seed) {
 
 
 
-void SVMClassifier::fit(thrust::device_vector<thrust::device_vector<double>> & data, thrust::device_vector<int> & label) {
+void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vector<int> & label) {
     srand(seed);
     
-    w.resize(data[0].size());
+    w.resize(9,0);
     
     for(unsigned int t = 1; t < epochs; t++) {
 
@@ -30,7 +30,7 @@ void SVMClassifier::fit(thrust::device_vector<thrust::device_vector<double>> & d
 
         double nt = 1/(c*t);
 
-        thrust::device_vector<double> xi = data[idx];
+        thrust::device_vector<double> xi(data.begin()+(idx*9), data.begin()+(idx*9)+(9));
 
         thrust::device_vector<double> temp(xi.size(), 0);
 
@@ -38,7 +38,7 @@ void SVMClassifier::fit(thrust::device_vector<thrust::device_vector<double>> & d
 
         double dot_product = thrust::reduce(temp.begin(), temp.end(), 0, thrust::plus<double>());
 
-        thrust::device_vector<double> next_w(xi.size(), 0);
+        thrust::device_vector<double> next_w(9);
 
         if(dot_product*label[idx] < 1) {
             for(unsigned int k = 0; k < xi.size(); k++) {
@@ -62,14 +62,14 @@ void SVMClassifier::fit(thrust::device_vector<thrust::device_vector<double>> & d
     cout << endl;
 }
 
-thrust::device_vector<int> SVMClassifier::predict(thrust::device_vector<thrust::device_vector<double>> & data) {
+thrust::device_vector<int> SVMClassifier::predict(thrust::device_vector<double> & data) {
     thrust::device_vector<int> predicted_labels;
 
     for(unsigned int i = 0; i < data.size(); i++) {
-        
-        thrust::device_vector<double> xi = data[i];
 
-        thrust::device_vector<double> temp(xi.size(), 0);
+        thrust::device_vector<double> xi(data.begin()+(i*9), data.begin()+(i*9)+(9));
+        
+        thrust::device_vector<double> temp(9, 0);
         
         thrust::transform(xi.begin(), xi.end(), w.begin(), temp.begin(), thrust::multiplies<double>());
 

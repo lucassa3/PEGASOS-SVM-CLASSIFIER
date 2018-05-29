@@ -6,6 +6,7 @@
 #include <string>
 #include <time.h>
 #include <algorithm>
+#include "svm_classifier.hpp"
 #include <thrust/device_vector.h>
 #include <thrust/host_vector.h>
 #include <thrust/transform.h>
