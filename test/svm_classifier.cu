@@ -78,9 +78,9 @@ void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vec
         w = next_w;
     }
 
-    /*for(unsigned int i = 0; i < w.size(); i++) {
+    for(unsigned int i = 0; i < w.size(); i++) {
         cout << "w" << i << " = " << w[i] << " ";
-    }*/
+    }
 
     cout << endl;
 }
