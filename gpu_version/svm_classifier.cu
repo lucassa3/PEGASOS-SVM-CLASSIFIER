@@ -4,6 +4,13 @@
 #include <string>
 #include <time.h>
 #include "svm_classifier.hpp"
+#include <thrust/device_vector.h>
+#include <thrust/transform.h>
+#include <thrust/sequence.h>
+#include <thrust/copy.h>
+#include <thrust/fill.h>
+#include <thrust/replace.h>
+#include <thrust/functional.h>
 
 SVMClassifier::SVMClassifier(double c, unsigned int epochs, unsigned int seed) {
   this->c = c;
@@ -12,7 +19,7 @@ SVMClassifier::SVMClassifier(double c, unsigned int epochs, unsigned int seed) {
 }
 
 
-void SVMClassifier::fit(vector<vector<double>> & data, vector<int> & label) {
+void SVMClassifier::fit(thrust::device_vector<thrust::device_vector<double>> & data, thrust::device_vector<int> & label) {
     srand(seed);
     
     w.resize(data[0].size());
@@ -23,15 +30,15 @@ void SVMClassifier::fit(vector<vector<double>> & data, vector<int> & label) {
 
         double nt = 1/(c*t);
 
-        vector<double> xi = data[idx];
+        thrust::device_vector<double> xi = data[idx];
 
-        vector<double> next_w(xi.size(), 0);
+        thrust::device_vector<double> temp(xi.size(), 0);
 
-        double dot_product = 0;
+        thrust::transform(xi.begin(), xi.end(), w.begin(), temp.begin(), thrust::multiplies<double>());
 
-        for(unsigned int i = 0; i < xi.size(); i++) {   
-            dot_product += w[i]*xi[i];
-        }
+        double dot_product = thrust::reduce(temp.begin(), temp.end(), 0, thrust::plus<double>());
+
+        thrust::device_vector<double> next_w(xi.size(), 0);
 
         if(dot_product*label[idx] < 1) {
             for(unsigned int k = 0; k < xi.size(); k++) {
@@ -55,18 +62,18 @@ void SVMClassifier::fit(vector<vector<double>> & data, vector<int> & label) {
     cout << endl;
 }
 
-vector<int> SVMClassifier::predict(vector<vector<double>> & data) {
-    vector<int> predicted_labels;
+thrust::device_vector<int> SVMClassifier::predict(thrust::device_vector<thrust::device_vector<double>> & data) {
+    thrust::device_vector<int> predicted_labels;
 
     for(unsigned int i = 0; i < data.size(); i++) {
         
-        vector<double> xi = data[i];
+        thrust::device_vector<double> xi = data[i];
+
+        thrust::device_vector<double> temp(xi.size(), 0);
         
-        double dot_product = 0;
-       
-        for(unsigned int j = 0; j < xi.size(); j++) {   
-            dot_product += w[j]*xi[j];
-        }
+        thrust::transform(xi.begin(), xi.end(), w.begin(), temp.begin(), thrust::multiplies<double>());
+
+        double dot_product = thrust::reduce(temp.begin(), temp.end(), 0, thrust::plus<double>());
 
         if (dot_product >= 0) {
             predicted_labels.push_back(1);
@@ -78,7 +85,7 @@ vector<int> SVMClassifier::predict(vector<vector<double>> & data) {
     return predicted_labels;
 }
 
-double SVMClassifier::accuracy(vector<int> & label, vector<int> & pred_label) {
+double SVMClassifier::accuracy(thrust::device_vector<int> & label, thrust::device_vector<int> & pred_label) {
     int correct_pred = 0;
 
     

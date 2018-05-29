@@ -3,12 +3,19 @@
 
 #include <vector>
 #include <time.h>
+#include <thrust/device_vector.h>
+#include <thrust/transform.h>
+#include <thrust/sequence.h>
+#include <thrust/copy.h>
+#include <thrust/fill.h>
+#include <thrust/replace.h>
+#include <thrust/functional.h>s
 
 using namespace std;
 
 class SVMClassifier {
 
-  vector<double> w;
+  thrust::device_vector<double> w;
   double c;
   unsigned int epochs;
   unsigned int seed;
@@ -17,11 +24,11 @@ public:
 
   SVMClassifier(double c, unsigned int epochs, unsigned int seed);
 
-  void fit(vector<vector<double>> & data, vector<int> & label);
+  void fit(thrust::device_vector<thrust::device_vector<double>> & data, thrust::device_vector<int> & label);
 
-  vector<int> predict(vector<vector<double>> & data);
+  vector<int> predict(thrust::device_vector<thrust::device_vector<double>> & data);
 
-  double  accuracy(vector<int> & label, vector<int> & pred_label);
+  double  accuracy(thrust::device_vector<int> & label, thrust::device_vector<int> & pred_label);
 
 };
 
