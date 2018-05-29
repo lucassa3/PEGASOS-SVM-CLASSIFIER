@@ -161,27 +161,27 @@ int main(int argc, char *argv[]) {
 
 
 
-    // double total_acc = 0;
+    double total_acc = 0;
 
-    // for (unsigned int i = 0; i < 20; i++) {
+    for (unsigned int i = 0; i < 20; i++) {
 
-    //     SVMClassifier* svm_clf = new SVMClassifier(0.001, 1000000, time(NULL));
-    //     cout << "seed: " << time(NULL) << endl;
+        SVMClassifier* svm_clf = new SVMClassifier(0.001, 1000000, time(NULL));
+        cout << "seed: " << time(NULL) << endl;
 
-    //     svm_clf->fit(x_train, y_train);
+        svm_clf->fit(x_train, y_train);
 
-    //     thrust::device_vector<int> y_pred = svm_clf->predict(x_test);
+        thrust::device_vector<int> y_pred = svm_clf->predict(x_test);
 
-    //     double cur_acc = svm_clf->accuracy(y_test, y_pred);
+        double cur_acc = svm_clf->accuracy(y_test, y_pred);
 
-    //     //for(unsigned int j = 0; j < y_pred.size(); j++) cout << y_pred[j] << endl;
+        //for(unsigned int j = 0; j < y_pred.size(); j++) cout << y_pred[j] << endl;
 
-    //     total_acc += cur_acc;
+        total_acc += cur_acc;
 
-    //     cout << "accurarcy: "<< cur_acc  << endl;
-    // }
+        cout << "accurarcy: "<< cur_acc  << endl;
+    }
 
-    // cout << "mean accuracy: "<< total_acc/20  << endl;
+    cout << "mean accuracy: "<< total_acc/20  << endl;
 
     return 0;
 }
