@@ -12,7 +12,6 @@
 #include <thrust/copy.h>
 #include <thrust/fill.h>
 #include <thrust/replace.h>
-#include <thrust/functional.h>
 
 using namespace std;
 

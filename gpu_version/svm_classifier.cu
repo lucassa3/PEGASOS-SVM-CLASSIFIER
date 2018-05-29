@@ -10,7 +10,6 @@
 #include <thrust/copy.h>
 #include <thrust/fill.h>
 #include <thrust/replace.h>
-#include <thrust/functional.h>
 
 SVMClassifier::SVMClassifier(double c, unsigned int epochs, unsigned int seed) {
   this->c = c;
