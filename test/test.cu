@@ -133,7 +133,11 @@ int main(int argc, char *argv[]) {
         
     //     data[i][data[0].size()-1] = 1;
     // }
-    
+
+    for (vector<double> sample: h_data) {
+        thrust::device_vector<double> aux(sample);
+        data.push_back(aux);   
+    }
     
 
     //thrust::device_vector<thrust::device_vector<double>> data(h_data);
