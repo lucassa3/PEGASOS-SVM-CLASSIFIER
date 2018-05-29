@@ -21,11 +21,11 @@ double rand_float(double low, double high) {
     return ((double)rand() * (high - low)) / (double)RAND_MAX + low;
 }
 
-thrust::host_vector<thrust::host_vector<double>> read_data(const char * filename, const unsigned int data_length, const unsigned int jump_lines) {
+vector<vector<double>> read_data(const char * filename, const unsigned int data_length, const unsigned int jump_lines) {
     
     ifstream file(filename);
  
-	thrust::host_vector<thrust::host_vector<double>> data;
+	vector<vector<double>> data;
  
 	string line = "";
     unsigned int counter = 0;
@@ -33,8 +33,8 @@ thrust::host_vector<thrust::host_vector<double>> read_data(const char * filename
 
 	while (getline(file, line) && counter < data_length) 
     {
-		thrust::host_vector<string> vec;
-        thrust::host_vector<double> dvec;
+		vector<string> vec;
+        vector<double> dvec;
 
 		boost::algorithm::split(vec, line, boost::is_any_of(","));
 
@@ -78,7 +78,7 @@ thrust::host_vector<thrust::host_vector<double>> read_data(const char * filename
 
 int main(int argc, char *argv[]) {
     
-    thrust::host_vector<thrust::host_vector<double>> h_data = read_data("../datasets/diabetes.csv", 5000000,  0);
+    vector<vector<double>> h_data = read_data("../datasets/diabetes.csv", 5000000,  0);
     
     random_shuffle(h_data.begin(), h_data.end());
 
