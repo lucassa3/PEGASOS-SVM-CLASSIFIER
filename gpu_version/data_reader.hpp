@@ -4,11 +4,12 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <thrust/host_vector.h>
 
 using namespace std;
 
-vector<vector<double>> read_data(const char * filename, const unsigned int data_length, const unsigned int jump_lines);
+thrust::host_vector<thrust::host_vector<double>> read_data(const char * filename, const unsigned int data_length, const unsigned int jump_lines);
 
-vector<double> set_labels(vector<vector<double>> & data);
+thrust::host_vector<double> set_labels(thrust::host_vector<thrust::host_vector<double>> & data);
 
 #endif

@@ -3,14 +3,15 @@
 #include <fstream>
 #include <string>
 #include <boost/algorithm/string.hpp>
+#include <thrust/host_vector.h>
 
 using namespace std;
 
-vector<vector<double>> read_data(const char * filename, const unsigned int data_length, const unsigned int jump_lines) {
+thrust::host_vector<thrust::host_vector<double>> read_data(const char * filename, const unsigned int data_length, const unsigned int jump_lines) {
     
     ifstream file(filename);
  
-	vector<vector<double>> data;
+	thrust::host_vector<thrust::host_vector<double>> data;
  
 	string line = "";
     unsigned int counter = 0;
@@ -18,8 +19,8 @@ vector<vector<double>> read_data(const char * filename, const unsigned int data_
 
 	while (getline(file, line) && counter < data_length) 
     {
-		vector<string> vec;
-        vector<double> dvec;
+		thrust::host_vector<string> vec;
+        thrust::host_vector<double> dvec;
 
 		boost::algorithm::split(vec, line, boost::is_any_of(","));
 
@@ -60,9 +61,9 @@ vector<vector<double>> read_data(const char * filename, const unsigned int data_
     return data;
 }
 
-vector<double> set_labels(vector<vector<double>> & data) {
+thrust::host_vector<double> set_labels(thrust::host_vector<thrust::host_vector<double>> & data) {
     
-    vector<double> labels;
+    thrust::host_vector<double> labels;
 
     double total = 0;
     
