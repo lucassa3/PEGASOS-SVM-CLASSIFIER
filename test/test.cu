@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
         for(unsigned int j = 0; j < data[i].size(); j++) cout << data[i][j] << " ";
         cout << endl;
     }*/
-    thrust::device_vector<thrust::device_vector> data(h_data.size());
+    thrust::device_vector<thrust::device_vector<double>> data;
 
 
     // for (unsigned int i = 0; i < h_data.size(); i++) {
