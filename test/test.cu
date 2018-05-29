@@ -1,36 +1,139 @@
+#include <random>
+#include <vector>
+#include <iostream>
+#include <ifstream>
+#include <boost/algorithm/string.hpp>
+#include <string>
+#include <time.h>
+#include <algorithm>
 #include <thrust/device_vector.h>
+#include <thrust/host_vector.h>
 #include <thrust/transform.h>
 #include <thrust/sequence.h>
 #include <thrust/copy.h>
 #include <thrust/fill.h>
 #include <thrust/replace.h>
-#include <thrust/functional.h>
-#include <iostream>
 
-int main(void)
-{
-    // allocate three device_vectors with 10 elements
-    thrust::device_vector<int> X(10);
-    thrust::device_vector<int> Y(10);
-    thrust::device_vector<int> Z(10);
+using namespace std;
 
-    // initialize X to 0,1,2,3, ....
-    thrust::sequence(X.begin(), X.end());
+double rand_float(double low, double high) {
+    
+    return ((double)rand() * (high - low)) / (double)RAND_MAX + low;
+}
 
-    // compute Y = -X
-    thrust::transform(X.begin(), X.end(), Y.begin(), thrust::negate<int>());
+thrust::host_vector<thrust::host_vector<double>> read_data(const char * filename, const unsigned int data_length, const unsigned int jump_lines) {
+    
+    ifstream file(filename);
+ 
+	thrust::host_vector<thrust::host_vector<double>> data;
+ 
+	string line = "";
+    unsigned int counter = 0;
 
-    // fill Z with twos
-    thrust::fill(Z.begin(), Z.end(), 2);
 
-    // compute Y = X mod 2
-    thrust::transform(X.begin(), X.end(), Z.begin(), Y.begin(), thrust::modulus<int>());
+	while (getline(file, line) && counter < data_length) 
+    {
+		thrust::host_vector<string> vec;
+        thrust::host_vector<double> dvec;
 
-    // replace all the ones in Y with tens
-    thrust::replace(Y.begin(), Y.end(), 1, 10);
+		boost::algorithm::split(vec, line, boost::is_any_of(","));
 
-    // print Y
-    thrust::copy(Y.begin(), Y.end(), std::ostream_iterator<int>(std::cout, "\n"));
-   
-    return 0;    
+        for(unsigned int i = 0; i < vec.size(); i++) {
+            
+            /*if(i == vec.size()-1) {
+                if(vec[i] == "Iris-setosa") {
+                    dvec.push_back(1);
+                }
+
+                else if(vec[i] == "Iris-versicolor") {
+                    dvec.push_back(0);
+                }
+
+                else if(vec[i] == "Iris-virginica") {
+                    dvec.push_back(2);
+                }
+            }
+
+            else*/
+
+            dvec.push_back(atof(vec[i].c_str()));
+
+            
+        }
+
+        /*for(unsigned int i = 0; i < dvec.size(); i++) { 
+            cout << dvec[i] << " ";
+        }
+
+        cout << endl;*/
+        data.push_back(dvec);
+        counter++;
+	}
+
+	file.close();
+
+    return data;
+}
+
+
+int main(int argc, char *argv[]) {
+    
+    thrust::host_vector<thrust::host_vector<double>> h_data = read_data("../datasets/diabetes.csv", 5000000,  0);
+    
+    random_shuffle(h_data.begin(), h_data.end());
+
+    thrust::host_vector<double> h_labels = set_labels(h_data);
+    
+    
+
+    // for(unsigned int i = 0; i < dataset.training_images.size(); i++) {
+    //     for(unsigned int j = 0; j < dataset.training_images[i].size(); j++) cout << dataset.training_images[i][j] << " ";
+    //     cout << endl;
+    // }
+    
+    
+    /*for(unsigned int i = 0; i < data.size(); i++) {
+        for(unsigned int j = 0; j < data[i].size(); j++) cout << data[i][j] << " ";
+        cout << endl;
+    }*/
+    
+    
+
+    //thrust::device_vector<thrust::device_vector<double>> data(h_data);
+    //thrust::device_vector<double> labels(h_labels);
+
+    //for(unsigned int j = 0; j < labels.size(); j++) cout << labels[j] << endl;
+
+    
+
+    /*thrust::device_vector<thrust::device_vector<double>> x_train(data.begin(), data.begin() + data.size()/2);
+    thrust::device_vector<thrust::device_vector<double>> x_test(data.begin() + data.size()/2, data.end());
+
+    thrust::device_vector<int> y_train(labels.begin(), labels.begin() + labels.size()/2);
+    thrust::device_vector<int> y_test(labels.begin() + labels.size()/2, labels.end());
+
+
+    double total_acc = 0;
+
+    for (unsigned int i = 0; i < 20; i++) {
+
+        SVMClassifier* svm_clf = new SVMClassifier(0.001, 1000000, time(NULL));
+        cout << "seed: " << time(NULL) << endl;
+
+        svm_clf->fit(x_train, y_train);
+
+        thrust::device_vector<int> y_pred = svm_clf->predict(x_test);
+
+        double cur_acc = svm_clf->accuracy(y_test, y_pred);
+
+        //for(unsigned int j = 0; j < y_pred.size(); j++) cout << y_pred[j] << endl;
+
+        total_acc += cur_acc;
+
+        cout << "accurarcy: "<< cur_acc  << endl;
+    }
+
+    cout << "mean accuracy: "<< total_acc/20  << endl;*/
+
+    return 0;
 }

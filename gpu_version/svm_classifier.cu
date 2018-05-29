@@ -18,6 +18,7 @@ SVMClassifier::SVMClassifier(double c, unsigned int epochs, unsigned int seed) {
 }
 
 
+
 void SVMClassifier::fit(thrust::device_vector<thrust::device_vector<double>> & data, thrust::device_vector<int> & label) {
     srand(seed);
     
