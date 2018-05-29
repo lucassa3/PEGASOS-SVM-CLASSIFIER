@@ -150,11 +150,14 @@ int main(int argc, char *argv[]) {
 
     
 
-    /*thrust::device_vector<thrust::device_vector<double>> x_train(data.begin(), data.begin() + data.size()/2);
-    thrust::device_vector<thrust::device_vector<double>> x_test(data.begin() + data.size()/2, data.end());
+    thrust::device_vectorr<double> x_train(data.begin(), data.begin() + (data.size()/2) - ((data.size()/2)%8));
+    thrust::device_vector<double> x_test(data.begin() + (data.size()/2) - ((data.size()/2)%8), data.end());
 
     thrust::device_vector<int> y_train(labels.begin(), labels.begin() + labels.size()/2);
     thrust::device_vector<int> y_test(labels.begin() + labels.size()/2, labels.end());
+    cout << x_train.size() << endl;
+    cout << y_train.size() << endl;
+
 
 
     double total_acc = 0;
