@@ -28,34 +28,34 @@ void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vec
     for(unsigned int t = 1; t < epochs; t++) {
 
         unsigned int idx = rand() % label.size();
-        cout << "b";
+        //cout << "b";
 
         double nt = 1/(c*t);
-        cout << "c";
-        cout << idx;
+        //cout << "c";
+        //cout << idx;
         thrust::device_vector<double> xi(data.begin()+(idx*9), data.begin()+(idx*9)+(9));
-        cout << "d";
+        //cout << "d";
         thrust::device_vector<double> temp(xi.size(), 0);
-        cout << "e";
+        //cout << "e";
         thrust::transform(xi.begin(), xi.end(), w.begin(), temp.begin(), thrust::multiplies<double>());
-        cout << "f";
+        //cout << "f";
         double dot_product = thrust::reduce(temp.begin(), temp.end(), 0, thrust::plus<double>());
-        cout << dot_product;
+        //cout << dot_product;
         thrust::device_vector<double> next_w(9);
-        cout << "h";
-        cout << label[idx];
+        //cout << "h";
+        //cout << label[idx];
         if(dot_product*label[idx] < 1) {
-            cout << "i";
+            //cout << "i";
             for(unsigned int k = 0; k < xi.size(); k++) {
-                cout << "j";
+                //cout << "j";
                 next_w[k] = w[k] - nt*c*w[k] + nt*label[idx]*xi[k];
             }
         }
 
         else {
-            cout << "i";
+            //cout << "i";
             for(unsigned int k = 0; k < xi.size(); k++) {
-                cout << "j";
+                //cout << "j";
                 next_w[k] = w[k] - nt*c*w[k];
             }
         }
