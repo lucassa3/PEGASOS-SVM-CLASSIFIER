@@ -27,7 +27,7 @@ void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vec
     
     for(unsigned int t = 1; t < epochs; t++) {
 
-        unsigned int idx = rand() % data.size();
+        unsigned int idx = rand() % label.size();
         cout << "b";
 
         double nt = 1/(c*t);
