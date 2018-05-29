@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
     
     random_shuffle(h_data.begin(), h_data.end());
 
-    thrust::host_vector<double> h_labels = set_labels(h_data);
+    //thrust::host_vector<double> h_labels = set_labels(h_data);
     
     
 
