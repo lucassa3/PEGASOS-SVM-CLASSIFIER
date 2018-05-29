@@ -60,20 +60,31 @@ void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vec
         
 
 
-        if(dot_product*cur_label < 1) {
+        /*if(dot_product*cur_label < 1) {
             //next_w = + nt*label[idx]*xi[k] - nt*c*w[k] + w[k] 
             thrust::transform(nt_label_xi.begin(), nt_label_xi.end(), next_w.begin(), next_w.begin(), thrust::plus<double>());
             thrust::transform(nt_c_w.begin(), nt_c_w.end(), next_w.begin(), next_w.begin(), thrust::minus<double>());
             thrust::transform(w.begin(), w.end(), next_w.begin(), next_w.begin(), thrust::plus<double>());
         }
 
-
-
         else {
             //next_w = - nt*c*w[k] + w[k]
             thrust::transform(nt_c_w.begin(), nt_c_w.end(), next_w.begin(), next_w.begin(), thrust::minus<double>());
             thrust::transform(w.begin(), w.end(), next_w.begin(), next_w.begin(), thrust::plus<double>());
+        }*/
+
+        if(dot_product*label[idx] < 1) {
+            for(unsigned int k = 0; k < xi.size(); k++) {
+                next_w[k] = w[k] - nt*c*w[k] + nt*label[idx]*xi[k];
+            }
         }
+
+        else {
+            for(unsigned int k = 0; k < xi.size(); k++) {
+                next_w[k] = w[k] - nt*c*w[k];
+            }
+        }
+
 
         w = next_w;
     }
