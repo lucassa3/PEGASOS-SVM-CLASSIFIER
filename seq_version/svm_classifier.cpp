@@ -48,9 +48,9 @@ void SVMClassifier::fit(vector<vector<double>> & data, vector<int> & label) {
         w = next_w;
     }
 
-    /*for(unsigned int i = 0; i < w.size(); i++) {
-        cout << "w" << i << " = " << w[i] << " ";
-    }*/
+    for(unsigned int i = 0; i < w.size(); i++) {
+        cout << "w" << i << " = " << w[i] << endl;
+    }
 
     cout << endl;
 }

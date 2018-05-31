@@ -79,24 +79,27 @@ int main(int argc, char *argv[]) {
 
 
     double total_acc = 0;
+    vector<int> y_pred;
 
     for (unsigned int i = 0; i < 20; i++) {
 
-        SVMClassifier* svm_clf = new SVMClassifier(0.001, 1000000, time(NULL));
+        SVMClassifier* svm_clf = new SVMClassifier(0.0001, 10000000, time(NULL));
         cout << "seed: " << time(NULL) << endl;
 
         svm_clf->fit(x_train, y_train);
 
-        vector<int> y_pred = svm_clf->predict(x_test);
+        y_pred = svm_clf->predict(x_test);
 
         double cur_acc = svm_clf->accuracy(y_test, y_pred);
 
-        //for(unsigned int j = 0; j < y_pred.size(); j++) cout << y_pred[j] << endl;
+        //
 
         total_acc += cur_acc;
 
-        cout << "accurarcy: "<< cur_acc  << endl;
+        cout << "accuracy: "<< cur_acc  << endl;
     }
+
+    for(unsigned int j = 0; j < y_pred.size(); j++) cout << y_pred[j];
 
     cout << "mean accuracy: "<< total_acc/20  << endl;
 

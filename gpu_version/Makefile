@@ -1,7 +1,7 @@
 CFLAGS = -std=c++11
 
 all: main.o svm_classifier.o data_reader.o
-	nvcc $(CFLAGS) $^ -o main 
+	nvcc $(CFLAGS) $^ -o main
 
 main.o: main.cu svm_classifier.hpp data_reader.hpp
 	nvcc $(CFLAGS) -c main.cu

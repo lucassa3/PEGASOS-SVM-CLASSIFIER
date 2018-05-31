@@ -3,15 +3,16 @@
 #include <fstream>
 #include <string>
 #include <boost/algorithm/string.hpp>
-#include <thrust/host_vector.h>
+
+#include "data_reader.hpp"
 
 using namespace std;
 
-thrust::host_vector<thrust::host_vector<double>> read_data(const char * filename, const unsigned int data_length, const unsigned int jump_lines) {
+vector<vector<double>> read_data(const char * filename, const unsigned int data_length, const unsigned int jump_lines) {
     
     ifstream file(filename);
  
-	thrust::host_vector<thrust::host_vector<double>> data;
+	vector<vector<double>> data;
  
 	string line = "";
     unsigned int counter = 0;
@@ -19,8 +20,8 @@ thrust::host_vector<thrust::host_vector<double>> read_data(const char * filename
 
 	while (getline(file, line) && counter < data_length) 
     {
-		thrust::host_vector<string> vec;
-        thrust::host_vector<double> dvec;
+		vector<string> vec;
+        vector<double> dvec;
 
 		boost::algorithm::split(vec, line, boost::is_any_of(","));
 
@@ -61,9 +62,10 @@ thrust::host_vector<thrust::host_vector<double>> read_data(const char * filename
     return data;
 }
 
-thrust::host_vector<double> set_labels(thrust::host_vector<thrust::host_vector<double>> & data) {
+
+vector<double> set_labels(vector<vector<double>> & data) {
     
-    thrust::host_vector<double> labels;
+    vector<double> labels;
 
     double total = 0;
     
@@ -88,4 +90,8 @@ thrust::host_vector<double> set_labels(thrust::host_vector<thrust::host_vector<d
     }
 
     return labels;
+}
+
+int feature_size(vector<vector<double>> & data) {
+    return data[0].size();
 }
