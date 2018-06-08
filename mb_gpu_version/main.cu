@@ -15,7 +15,7 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
     
-    vector<vector<double>> h_data = read_data("../datasets/diabetes.csv", 5000000,  0);
+    vector<vector<double>> h_data = read_data("../datasets/iris.data.txt", 5000000,  0);
     
     const unsigned int f_size = feature_size(h_data);
     
@@ -35,8 +35,8 @@ int main(int argc, char *argv[]) {
     //thrust::copy(data.begin(), data.begin()+9, std::ostream_iterator<int>(std::cout, "\n"));  
     //thrust::copy(labels.begin(), labels.begin()+1, std::ostream_iterator<int>(std::cout, "\n"));
 
-    thrust::device_vector<double> x_train(data.begin(), data.begin() + (data.size()/2) - ((data.size()/2)%9));
-    thrust::device_vector<double> x_test(data.begin() + (data.size()/2) - ((data.size()/2)%9), data.end());
+    thrust::device_vector<double> x_train(data.begin(), data.begin() + (data.size()/2) - ((data.size()/2)%f_size));
+    thrust::device_vector<double> x_test(data.begin() + (data.size()/2) - ((data.size()/2)%f_size), data.end());
 
     thrust::device_vector<int> y_train(labels.begin(), labels.begin() + labels.size()/2);
     thrust::device_vector<int> y_test(labels.begin() + labels.size()/2, labels.end());
@@ -48,9 +48,9 @@ int main(int argc, char *argv[]) {
 
     thrust::device_vector<int> y_pred(y_test.size());
 
-    for (unsigned int i = 0; i < 5; i++) {
+    for (unsigned int i = 0; i < 1; i++) {
 
-        SVMClassifier* svm_clf = new SVMClassifier(0.001, 10000, time(NULL), f_size, 80);
+        SVMClassifier* svm_clf = new SVMClassifier(0.01, 2, 42, f_size, 3);
         //cout << "seed: " << time(NULL) << endl;
 
         svm_clf->fit(x_train, y_train);
@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
         cout << "accurarcy: "<< cur_acc  << endl;
     }
 
-    cout << "mean accuracy: "<< total_acc/5  << endl;
+    cout << "mean accuracy: "<< total_acc/1  << endl;
 
     for(unsigned int j = 0; j < y_train.size(); j++) cout << y_pred[j];
 

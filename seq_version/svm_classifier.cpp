@@ -28,10 +28,13 @@ void SVMClassifier::fit(vector<vector<double>> & data, vector<int> & label) {
         vector<double> next_w(xi.size(), 0);
 
         double dot_product = 0;
+        
 
         for(unsigned int i = 0; i < xi.size(); i++) {   
             dot_product += w[i]*xi[i];
         }
+
+        //cout << "DOT_PROD: " << dot_product <<endl;
 
         if(dot_product*label[idx] < 1) {
             for(unsigned int k = 0; k < xi.size(); k++) {

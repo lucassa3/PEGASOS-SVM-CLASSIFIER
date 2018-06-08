@@ -52,7 +52,7 @@ void generate_random_dataset(vector<vector<double>> & data, vector<int> & label)
 
 int main(int argc, char *argv[]) {
     
-    vector<vector<double>> data = read_data("../datasets/diabetes.csv", 5000000,  0);
+    vector<vector<double>> data = read_data("../datasets/iris.data.txt", 5000000,  0);
 
     // for(unsigned int i = 0; i < dataset.training_images.size(); i++) {
     //     for(unsigned int j = 0; j < dataset.training_images[i].size(); j++) cout << dataset.training_images[i][j] << " ";
@@ -81,10 +81,10 @@ int main(int argc, char *argv[]) {
     double total_acc = 0;
     vector<int> y_pred;
 
-    for (unsigned int i = 0; i < 20; i++) {
+    for (unsigned int i = 0; i < 1; i++) {
 
-        SVMClassifier* svm_clf = new SVMClassifier(0.0001, 10000000, time(NULL));
-        cout << "seed: " << time(NULL) << endl;
+        SVMClassifier* svm_clf = new SVMClassifier(0.01, 20000, 42);
+        //cout << "seed: " << time(NULL) << endl;
 
         svm_clf->fit(x_train, y_train);
 
@@ -99,9 +99,14 @@ int main(int argc, char *argv[]) {
         cout << "accuracy: "<< cur_acc  << endl;
     }
 
-    for(unsigned int j = 0; j < y_pred.size(); j++) cout << y_pred[j];
+    // for(unsigned int j = 0; j < y_pred.size(); j++) {
+    //     cout << y_pred[j];
+    //     cout << " ";
+    //     cout<< y_test[j] << endl;
 
-    cout << "mean accuracy: "<< total_acc/20  << endl;
+    // }
+
+    cout << "mean accuracy: "<< total_acc/1  << endl;
 
     return 0;
 }

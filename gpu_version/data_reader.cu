@@ -27,7 +27,7 @@ vector<vector<double>> read_data(const char * filename, const unsigned int data_
 
         for(unsigned int i = 0; i < vec.size(); i++) {
             
-            /*if(i == vec.size()-1) {
+            if(i == vec.size()-1) {
                 if(vec[i] == "Iris-setosa") {
                     dvec.push_back(1);
                 }
@@ -41,7 +41,7 @@ vector<vector<double>> read_data(const char * filename, const unsigned int data_
                 }
             }
 
-            else*/
+            else
 
             dvec.push_back(atof(vec[i].c_str()));
 
@@ -71,7 +71,7 @@ vector<double> set_labels(vector<vector<double>> & data) {
     
     for (unsigned int i = 0; i < data.size(); i++) {
         
-        if (data[i][data[i].size()-1] == 1) {
+        if (data[i][data[i].size()-1] == 2) {
             labels.push_back(1);
             total+=1;
 
