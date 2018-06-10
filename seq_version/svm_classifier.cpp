@@ -34,8 +34,6 @@ void SVMClassifier::fit(vector<vector<double>> & data, vector<int> & label) {
             dot_product += w[i]*xi[i];
         }
 
-        //cout << "DOT_PROD: " << dot_product <<endl;
-
         if(dot_product*label[idx] < 1) {
             for(unsigned int k = 0; k < xi.size(); k++) {
                 next_w[k] = w[k] - nt*c*w[k] + nt*label[idx]*xi[k];
