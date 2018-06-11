@@ -26,6 +26,38 @@ $ make
 ```
 Once compiled, the program is ready to be runned (./main). Before you do it though, if you want to use any of the datasets provided, just unzip the dataset folder to the same place the zipped version was. If you do this and dont set any of the environment variables presented below, it will run the diabetes.csv dataset with the default parameter values (also presented below). If you dont unzip the dataset, and dont use the data_path variable, you'll get yourself a seg fault error! :(
 
+You can use the following environment variables when running the code:
+* DATA_PATH - Path to your dataset (Default: ../datasets/diabetes.csv);
+* C - Lambda regularization parameter to contrrol step size (Default: 0.001);
+* SAMPLES_LIMIT - If you dont want to use your whole dataset for speed purposes, specify the maximum samples you'd like to read (Default: 9999999);
+* EPOCHS - Number of epochs the training part will run;
+* BATCH_SIZE - The desired size of your batch (ONLY AVAILABLE IN MINI BATCH ALGORITHM) (Default: 10);
+* TRAIN_SIZE - Percentage of the dataset allocated for training (0-1) (Default: 0.8);
+* NUM_ITERATIONS - Number of times the algorithm will run, good to mitigate some weird results due to bad seed, and return mean accuracy of all iterations (Default: 10).
+
+Example:
+```
+$  DATA_PATH=../datasets/mnist_train.csv C=0.0001 EPOCHS=500000 BATCH_SIZE=200 TRAIN_SIZE=0.8 NUM_ITERATIONS=20 ./main
+```
+
+## Results:
+
+### 1. Performance:
+The premise of building a mini-batch gpu version was that it would be better as it would be able to fetch more samples at once, and also benefit from datasets that have a large number of features (e.g, MNIST). As numbers of samples/time go, this has proven to be the case:
+
+The four graphics below represent time per number of samples of each database i used:
+
+
+
+
+On the CPU sequential version (marked in blue), since there is not the batch concept, the number of samples directly reflects the number of epochs the alogrithm used, limited to one single sample used per epoch. On the GPU mini-batch version (marked in red), the number of samples are calculated using always a fixed epoch number (10000) multiplied by the number of samples contained in a batch, and increascing only the batch number at each measurement.
+
+
+
+
+
+
+
 
 
 
