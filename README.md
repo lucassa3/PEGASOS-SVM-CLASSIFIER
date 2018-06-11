@@ -47,7 +47,7 @@ The premise of building a mini-batch gpu version was that it would have a better
 
 The four graphics below represent time per number of samples of each database i used:
 
-
+![Alt text](imgs/charts.png?raw=true "Title")
 
 
 On the CPU sequential version (marked in red), since there is not the batch concept, the number of samples directly reflects the number of epochs the alogrithm used, limited to one single sample used per epoch. On the GPU mini-batch version (marked in blue, the number of samples are calculated using always a fixed epoch number (10000) multiplied by the number of samples contained in a batch, and increascing only the batch number at each measurement.
