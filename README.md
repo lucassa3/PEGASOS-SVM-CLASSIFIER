@@ -43,15 +43,16 @@ $  DATA_PATH=../datasets/mnist_train.csv C=0.0001 EPOCHS=500000 BATCH_SIZE=200 T
 ## Results:
 
 ### 1. Performance:
-The premise of building a mini-batch gpu version was that it would have a better as it would be able to fetch more samples at once while also benefitting from datasets that have a large number of features (e.g, MNIST). As numbers of samples/time go, this has proven to be the case:
+The premise of building a mini-batch gpu version was that it would have a better performance as it would be able to fetch more samples at once while also benefitting from datasets that have a large number of features (e.g, MNIST). As numbers of samples/time go, this has proven to be the case:
 
 The four graphics below represent time per number of samples of each database i used:
 
 ![Alt text](imgs/charts.png?raw=true "Title")
 
 
-On the CPU sequential version (marked in red), since there is not the batch concept, the number of samples directly reflects the number of epochs the alogrithm used, limited to one single sample used per epoch. On the GPU mini-batch version (marked in blue, the number of samples are calculated using always a fixed epoch number (10000) multiplied by the number of samples contained in a batch, and increascing only the batch number at each measurement.
+On the CPU sequential version (marked in red), since there is not the batch concept, the number of samples directly reflects the number of epochs the alogrithm used, limited to one single sample used per epoch. On the GPU mini-batch version (marked in blue, the number of samples are calculated using always a fixed epoch number (10000) multiplied by the number of samples contained in a batch, and increascing only the batch number at each data point.
 
+As the charts represent, training with a small number of used samples yields a better performance on the CPU side, since the data doesnt have to be passed on to the gpu. However, as the number of samples used increase, the gpu starts compensating its slow data copy with the ability to iterate each weight at the same time, and process the whole batch in parallel as well. MNIST is clearly one that takes advantage of Mini-batch processing, given its large feature set (one per pixel in a 28x28 image). Other datasets such as Diabetes didn't get to surpass CPU version with GPU version, mainly due to the lack of samples in the dataset (only 546 in the training set), making it unable to have batches bigger than 500 samples.
 
 
 
