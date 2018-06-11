@@ -45,14 +45,4 @@ KernelArray<T> convertToKernel(thrust::device_vector<T> & dVec) {
   return kArray;
 }
 
-template <typename T>
-KernelArray<T> convertToKernel2(thrust::device_vector<T> & dVec) {
-  
-  KernelArray<T> kArray;
-  kArray._array = thrust::raw_pointer_cast(&dVec[0]);
-  kArray._size  = (int) dVec.size();
-
-  return kArray;
-}
-
 #endif

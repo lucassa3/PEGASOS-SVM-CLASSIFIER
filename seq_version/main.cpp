@@ -11,11 +11,16 @@ using namespace std;
 
 void set_envs(string & data_path, double *c, unsigned int *samples_limit, unsigned int *epochs, unsigned int *train_size, unsigned int *num_iterations) {
     
-    char *data_path_env, *samples_limit_env, *epochs_env, *train_size_env, *num_iterations_env;
+    char *data_path_env, *c_env, *samples_limit_env, *epochs_env, *train_size_env, *num_iterations_env;
 
     data_path_env = getenv ("DATA_PATH");
     if(data_path_env != NULL) {
         data_path = data_path_env;
+    }
+
+    c_env = getenv ("C");
+    if(c_env != NULL) {
+        *c = atof(c_env);
     }
      
     samples_limit_env = getenv ("SAMPLES_LIMIT");
@@ -30,7 +35,7 @@ void set_envs(string & data_path, double *c, unsigned int *samples_limit, unsign
 
     train_size_env = getenv ("TRAIN_SIZE");
     if(train_size_env != NULL) {
-        *train_size = atoi(train_size_env);
+        *train_size = 1/(1-atof(train_size_env));
     }
 
     num_iterations_env = getenv ("NUM_ITERATIONS");
@@ -49,24 +54,16 @@ int main(int argc, char *argv[]) {
     unsigned int num_iterations = 5;
 
     set_envs(data_path, &c, &samples_limit, &epochs, &train_size, &num_iterations);
+
+    cout << "Reading and parsing data: " << endl;
     
     vector<vector<double>> data = read_data(data_path.c_str(), samples_limit);
 
-    // for(unsigned int i = 0; i < dataset.training_images.size(); i++) {
-    //     for(unsigned int j = 0; j < dataset.training_images[i].size(); j++) cout << dataset.training_images[i][j] << " ";
-    //     cout << endl;
-    // }
-    
     random_shuffle(data.begin(), data.end());
-    /*for(unsigned int i = 0; i < data.size(); i++) {
-        for(unsigned int j = 0; j < data[i].size(); j++) cout << data[i][j] << " ";
-        cout << endl;
-    }*/
     
     vector<double> labels = set_labels(data);
 
-    //for(unsigned int j = 0; j < labels.size(); j++) cout << labels[j] << endl;
-
+    cout << "Done " << endl;
     
 
     vector<vector<double>> x_test(data.begin(), data.begin() + data.size()/train_size);
@@ -75,16 +72,20 @@ int main(int argc, char *argv[]) {
     vector<int> y_test(labels.begin(), labels.begin() + labels.size()/train_size);
     vector<int> y_train(labels.begin() + labels.size()/train_size, labels.end());
 
-    cout << x_train.size() << endl;
-    cout << y_train.size() << endl;
+    // cout << x_train.size() << endl;
+    // cout << y_train.size() << endl;
 
 
     double total_acc = 0;
     vector<int> y_pred;
 
-    for (unsigned int i = 0; i < num_iterations; i++) {
+    clock_t begin = clock();
+    cout << "Started SVM: " << endl;
 
-        SVMClassifier* svm_clf = new SVMClassifier(c, epochs, time(NULL));
+    for (unsigned int i = 0; i < num_iterations; i++) {
+        clock_t iter_begin = clock();
+
+        SVMClassifier* svm_clf = new SVMClassifier(c, epochs, time(NULL)+i);
         //cout << "seed: " << time(NULL) << endl;
 
         svm_clf->fit(x_train, y_train);
@@ -97,17 +98,23 @@ int main(int argc, char *argv[]) {
 
         total_acc += cur_acc;
 
+        clock_t iter_end = clock();
+
+        double iter_elapsed_secs = double(iter_end - iter_begin) / CLOCKS_PER_SEC;
+
+        cout << "Current iteration training + prediciton time: " << iter_elapsed_secs << " seconds" << endl;
+
         cout << "accuracy: "<< cur_acc  << endl;
     }
 
-    // for(unsigned int j = 0; j < y_pred.size(); j++) {
-    //     cout << y_pred[j];
-    //     cout << " ";
-    //     cout<< y_test[j] << endl;
+    clock_t end = clock();
 
-    // }
+    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+    
 
-    cout << "mean accuracy: "<< total_acc/num_iterations  << endl;
+    cout << endl <<  "mean accuracy: "<< total_acc/num_iterations  << endl;
+
+    cout << "Elapsed total training + predicting time: " << elapsed_secs << " seconds" << endl;
 
     return 0;
 }

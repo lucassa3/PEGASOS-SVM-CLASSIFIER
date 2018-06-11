@@ -107,7 +107,7 @@ void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vec
 
     //convert device_vector to gpu array
     KernelArray<double> ka_data = convertToKernel(data);
-    KernelArray<int> ka_label = convertToKernel2(label);
+    KernelArray<int> ka_label = convertToKernel(label);
 
     for(unsigned int t = 1; t < epochs; t++) {
         cudaMemset(next_w, 0, feature_size*sizeof(double));
@@ -165,16 +165,20 @@ void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vec
         // }
 
     }
-    double *h_b;
-    h_b = (double *)malloc(feature_size*sizeof(double));
-    cudaMemcpy(h_b, w, feature_size*sizeof(double), cudaMemcpyDeviceToHost);
-    for(unsigned int i = 0; i < feature_size; i++) {
-        cout << "w["<<i<<"] = " << h_b[i] << endl;
-    }
+    // double *h_b;
+    // h_b = (double *)malloc(feature_size*sizeof(double));
+    // cudaMemcpy(h_b, w, feature_size*sizeof(double), cudaMemcpyDeviceToHost);
+    // for(unsigned int i = 0; i < feature_size; i++) {
+    //     cout << "w["<<i<<"] = " << h_b[i] << endl;
+    // }
 
     // for(unsigned int i = 0; i < w.size(); i++) {
     //     cout << "w" << i << " = " << w[i] << endl;
     // }
+
+    cudaFree(xi);
+    cudaFree(yi_xi);
+    cudaFree(next_w);
 
     cout << endl;
 }
@@ -188,7 +192,7 @@ thrust::device_vector<int> SVMClassifier::predict(thrust::device_vector<double> 
 
     KernelArray<double> ka_data = convertToKernel(data);
 
-    predict_array<<<ceil((data.size()/feature_size)/512.0),512 >>>(ka_data, w, d_predicted_labels, feature_size);
+    predict_array<<<ceil((data.size()/feature_size)/512.0), 512>>>(ka_data, w, d_predicted_labels, feature_size);
 
     int *y_pred;
     y_pred = (int *)malloc(data.size()/feature_size*sizeof(int));
@@ -197,6 +201,10 @@ thrust::device_vector<int> SVMClassifier::predict(thrust::device_vector<double> 
     for(unsigned int i = 0; i < data.size()/feature_size; i++) {
         predicted_labels.push_back(y_pred[i]);
     }
+
+    cudaFree(w);
+    cudaFree(d_predicted_labels);
+    free(y_pred);
 
 
     return predicted_labels;
