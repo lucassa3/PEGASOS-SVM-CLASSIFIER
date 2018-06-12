@@ -165,12 +165,12 @@ void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vec
         // }
 
     }
-    double *h_b;
-    h_b = (double *)malloc(feature_size*sizeof(double));
-    cudaMemcpy(h_b, w, feature_size*sizeof(double), cudaMemcpyDeviceToHost);
-    for(unsigned int i = 0; i < feature_size; i++) {
-        cout << "w["<<i<<"] = " << h_b[i] << endl;
-    }
+    // double *h_b;
+    // h_b = (double *)malloc(feature_size*sizeof(double));
+    // cudaMemcpy(h_b, w, feature_size*sizeof(double), cudaMemcpyDeviceToHost);
+    // for(unsigned int i = 0; i < feature_size; i++) {
+    //     cout << "w["<<i<<"] = " << h_b[i] << endl;
+    // }
 
     // for(unsigned int i = 0; i < w.size(); i++) {
     //     cout << "w" << i << " = " << w[i] << endl;

@@ -114,14 +114,22 @@ int main(int argc, char *argv[]) {
 
     for (unsigned int i = 0; i < num_iterations; i++) {
 
-        cudaEventRecord(iter_start, NULL);
+        
 
         SVMClassifier* svm_clf = new SVMClassifier(c, epochs, time(NULL)+i, f_size, batch_size);
         //cout << "seed: " << time(NULL) << endl;
 
+        cudaEventRecord(iter_start, NULL);
+
         // cout << "Fitting data: " << endl;
         svm_clf->fit(x_train, y_train);
         // cout << "Done " << endl;
+
+        cudaEventRecord(iter_stop, NULL);
+        cudaEventSynchronize(iter_stop);
+        float iter_msecTotal = 0.0f;
+        cudaEventElapsedTime(&iter_msecTotal, iter_start, iter_stop);
+        cout << "Current iteration training time: " << iter_msecTotal/1000 << " seconds" << endl;
 
         // cout << "Predicting data: " << endl;
         y_pred = svm_clf->predict(x_test);
@@ -133,12 +141,9 @@ int main(int argc, char *argv[]) {
 
         cout << "accuracy: "<< cur_acc  << endl;
         
-        cudaEventRecord(iter_stop, NULL);
-        cudaEventSynchronize(iter_stop);
+        
 
-        float iter_msecTotal = 0.0f;
-        cudaEventElapsedTime(&iter_msecTotal, iter_start, iter_stop);
-        cout << "Current iteration training + prediciton time: " << iter_msecTotal/1000 << " seconds" << endl;
+       
 
     }
 

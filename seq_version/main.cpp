@@ -83,12 +83,20 @@ int main(int argc, char *argv[]) {
     cout << "Started SVM: " << endl;
 
     for (unsigned int i = 0; i < num_iterations; i++) {
-        clock_t iter_begin = clock();
+        
 
         SVMClassifier* svm_clf = new SVMClassifier(c, epochs, time(NULL)+i);
         //cout << "seed: " << time(NULL) << endl;
 
+        clock_t iter_begin = clock();
+
         svm_clf->fit(x_train, y_train);
+
+        clock_t iter_end = clock();
+
+        double iter_elapsed_secs = double(iter_end - iter_begin) / CLOCKS_PER_SEC;
+
+        cout << "Current iteration training time: " << iter_elapsed_secs << " seconds" << endl;
 
         y_pred = svm_clf->predict(x_test);
 
@@ -98,11 +106,7 @@ int main(int argc, char *argv[]) {
 
         total_acc += cur_acc;
 
-        clock_t iter_end = clock();
-
-        double iter_elapsed_secs = double(iter_end - iter_begin) / CLOCKS_PER_SEC;
-
-        cout << "Current iteration training + prediciton time: " << iter_elapsed_secs << " seconds" << endl;
+        
 
         cout << "accuracy: "<< cur_acc  << endl;
     }
