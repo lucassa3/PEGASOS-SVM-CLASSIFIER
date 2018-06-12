@@ -62,6 +62,89 @@ OBS1: Keep in mind that the parallel potential of cuda is limited by your Graphi
 
 OBS2: Time accounts both fit and predict steps.
 
+### 2. Accuracy:
+
+The main point of a classifier is to have a solid accuracy over a classification test. The tests below tries to get to approximate accuracy results compared to scikit python SVM version. Then it compares both the performance of the cpu and gpu accuracies against the time they took to get to the approximate results of scikits tool. There were no scientific method to determine the regularization parameters, batch size or epochs in any of these datasets, other than reading some other solutions online and seeing what works best. Be aware that you might get similar results with different parameters.
+
+The class number beside every dataset name has to do with the class number I chose to be the positive sample, and all others to be negative ones. This has to be done once we are talking about a binary classifier, and therefore can't handle multiple classes.
+
+OBS1: Time now accounts only fit step.
+
+#### Iris class 2 dataset:
+Percentage of class 2 in dataset: 0.33
+
+Scikit SVM for python:
+* accuracy = 0.966667;
+
+Sequential version:
+`C=0.0001 EPOCHS=10000 TRAIN_SIZE=0.8 NUM_ITERATIONS=100`
+* mean accuracy = 0.968333;
+* time/iteration = 0.0036 seconds;
+
+GPU version:
+`C=0.0001 EPOCHS=1000 BATCH_SIZE=100 TRAIN_SIZE=0.8 NUM_ITERATIONS=100`
+* mean accuracy = 0.975;
+* time/iteration = 0.021 seconds;
+
+It turns out that iris dataset converges to a solution very quickly, and since it doesnt have many features and cant have batches greater than 100 (due to training size and dataset size) it wont benefit from massive parallelizing and its cons.
+
+#### Diabetes class 1 Dataset:
+Percentage of class 1 in dataset: 0.348958
+
+Scikit SVM for python:
+* accuracy = 0.679674;
+
+Sequential version:
+`C=0.001 EPOCHS=10000000 TRAIN_SIZE=0.8 NUM_ITERATIONS=20`
+* mean accuracy = 0.665752;
+* time/iteration = 4.37 seconds;
+
+GPU version:
+`C=0.001 EPOCHS=1000000 BATCH_SIZE=200 TRAIN_SIZE=0.8 NUM_ITERATIONS=20 ./main`
+* mean accuracy = 0.657358;
+* time/iteration = 37.06 seconds;
+
+Diabetes dataset is another one that wont benefit from GPU perks for the exact same reasons stated for Iris dataset.
+
+#### Covtype class 1 Dataset:
+Percentage of class 1 in dataset: 0.364605
+
+Scikit SVM for python:
+* accuracy = 0.753333;
+
+Sequential version:
+`C=0.0001 EPOCHS=10000000 TRAIN_SIZE=0.8 NUM_ITERATIONS=20`
+* mean accuracy = 0.679460;
+* time/iteration = 13.59 seconds;
+
+GPU version:
+`C=0.0001 EPOCHS=500000 BATCH_SIZE=400 TRAIN_SIZE=0.8 NUM_ITERATIONS=20`
+* mean accuracy = 0.667627;
+* time/iteration = 39.42 seconds;
+
+This dataset starts to bem more interesting to the gpu because it has lotos of samples and does not limit how much of them can be inserted in a batch, for that reason, and the fact that is has 50 features, considerably more than both datasets before, it performs good in gpu. However its still not enough to beat cpu on time ellapsed. Both algorithms had a hard time getting closer to scikits results, and for time limiting reasons, i decided not to push that far, but it could converge to scikits results with enough time and better parameters.
+
+
+#### Mnist class 5 Dataset:
+Percentage of class 5 in dataset: 0.09035
+
+Scikit SVM for python:
+* accuracy = 0.970166;
+
+Sequential version:
+`C=0.0001 EPOCHS=100000 TRAIN_SIZE=0.8 NUM_ITERATIONS=100`
+* mean accuracy = 0.9561;
+* time/iteration = 1.16 seconds;
+
+GPU version:
+`C=0.0001 EPOCHS=100000 BATCH_SIZE=100 TRAIN_SIZE=0.8 NUM_ITERATIONS=100`
+* mean accuracy = 0.953983;
+* time/iteration = 1.7414 seconds;
+
+The last result, mnist dataset, was another one that converged pretty quickly to an approximate result. Even though it still took more time to run on the gpu, its possible to see the pattern that the more features it has, the time difference between both version gets shorter, up to a point where datasets with thousand of features will run better on the mini-batch gpu version.
+
+
+
 
 
 
