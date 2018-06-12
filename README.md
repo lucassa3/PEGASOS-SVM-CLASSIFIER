@@ -4,7 +4,7 @@ Implementation of a support vector machine classifier using primal estimated sub
 ## About
 This project was about building a Suport Vector Machine binary classifier from scratch using the methods described in [this article](https://www.cs.huji.ac.il/~shais/papers/ShalevSiSrCo10.pdf), and tweaking it to a mini batch version that, in theory, would benefit from the massive parallelizing available for GPU devices.
 
-Two main SVM dinary classifiers were then built for comparison purposes, a sequential based pegasos basic algorithm described in section 2.1 of the article, and a mini-batch version described in section 2.3. The sequential version trains with data on CPU, while the mini-batch version trains with data natively in GPU using CUDA kernels. There are also two other experimental versions using CUDA Thrust on ohter_versions folder, though be aware that they are not totally completed/optimized, and therefore wont be covered in the scope of this document.
+Two main SVM dinary classifiers were then built for comparison purposes, a sequential based pegasos basic algorithm described in section 2.1 of the article, and a mini-batch version described in section 2.3. The sequential version trains with data on CPU, while the mini-batch version trains with data natively in GPU using CUDA kernels. There are also two other experimental versions using CUDA THRUST API on ohter_versions folder, though be aware that they are not totally completed/optimized, and therefore wont be covered in the scope of this document.
 
 If you would like to know more about Support vector machines and how they work, i suggest looking into this very didatic video from MIT OpenCourseWare [here](https://www.youtube.com/watch?v=_PwhiWxHK8o&t=1324s). If you want details into building the necessary environment to run this code and how to operate it, continue reading this guide, or if you are more interested on data analysis and the results i've got, skip to the Results section.
 
@@ -86,7 +86,7 @@ GPU version:
 * mean accuracy = 0.975;
 * time/iteration = 0.021 seconds;
 
-It turns out that iris dataset converges to a solution very quickly, and since it doesnt have many features and cant have batches greater than 100 (due to training size and dataset size) it wont benefit from massive parallelizing and its cons.
+It turns out that iris dataset converges to a solution very quickly, and since it doesn't have many features and can't have batches greater than 100 (due to training size and dataset size) it won't benefit from massive parallelizing and it's cons.
 
 #### Diabetes class 1 Dataset:
 Percentage of class 1 in dataset: 0.348958
@@ -104,7 +104,7 @@ GPU version:
 * mean accuracy = 0.657358;
 * time/iteration = 37.06 seconds;
 
-Diabetes dataset is another one that wont benefit from GPU perks for the exact same reasons stated for Iris dataset.
+Diabetes dataset is another one that won't benefit from GPU perks for the exact same reasons stated for Iris dataset.
 
 #### Covtype class 1 Dataset:
 Percentage of class 1 in dataset: 0.364605
@@ -122,7 +122,7 @@ GPU version:
 * mean accuracy = 0.667627;
 * time/iteration = 39.42 seconds;
 
-This dataset starts to bem more interesting to the gpu because it has lotos of samples and does not limit how much of them can be inserted in a batch, for that reason, and the fact that is has 50 features, considerably more than both datasets before, it performs good in gpu. However its still not enough to beat cpu on time ellapsed. Both algorithms had a hard time getting closer to scikits results, and for time limiting reasons, i decided not to push that far, but it could converge to scikits results with enough time and better parameters.
+This dataset starts to be more interesting to the gpu because it has lots of samples and does not limit how much of them can be inserted in a batch. for that reason, and the fact that is has 50 features, considerably more than both datasets before, it performs good in gpu. However its still not enough to beat cpu on time ellapsed. Both algorithms had a hard time getting closer to scikits results, and for time limiting reasons, i decided not to push that far, but it could converge to scikits results with enough time and better parameters.
 
 
 #### Mnist class 5 Dataset:
