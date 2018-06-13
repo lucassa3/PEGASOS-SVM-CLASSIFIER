@@ -6,6 +6,8 @@ This project was about building a Suport Vector Machine binary classifier from s
 
 Two main SVM dinary classifiers were then built for comparison purposes, a sequential based pegasos basic algorithm described in section 2.1 of the article, and a mini-batch version described in section 2.3. The sequential version trains with data on CPU, while the mini-batch version trains with data natively in GPU using CUDA kernels. There are also two other experimental versions using CUDA THRUST API on ohter_versions folder, though be aware that they are not totally completed/optimized, and therefore wont be covered in the scope of this document.
 
+The goal of a Support Vector Machine is to find the best separating hyperplane for two types of samples (the ones labeled as “negative” and the ones labeled as “positive”). A good separating hyperplane is one that can divide two kinds of sample while maximizing its distance from the two sets of sample. For that to happen, at each epoch, the algorithm must take a sample, or a batch of samples, compute if the current inclination + offset (also known as weight + bias) in that epoch of that hyperplane in the dimension of that sample(s) feature correctly predicts its label, and adjusting its weight values according to the result.
+
 If you would like to know more about Support vector machines and how they work, i suggest looking into this very didatic video from MIT OpenCourseWare [here](https://www.youtube.com/watch?v=_PwhiWxHK8o&t=1324s). If you want details into building the necessary environment to run this code and how to operate it, continue reading this guide, or if you are more interested on data analysis and the results i've got, skip to the Results section.
 
 ## Requirements
