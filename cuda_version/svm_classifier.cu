@@ -70,7 +70,7 @@ __global__ void select_samples(double *xi, double *w, unsigned int feature_size,
 
 __global__ void reduce_by_samples(double *yi_xi, double *xi, unsigned int batch_size, unsigned int feature_size, unsigned int idx, KernelArray<int> label) {
     int i=blockIdx.x*blockDim.x+threadIdx.x;
-    
+
     if(i < feature_size) {
         double sum = 0;
     
@@ -84,6 +84,7 @@ __global__ void reduce_by_samples(double *yi_xi, double *xi, unsigned int batch_
 }
 
 __global__ void update_w(double *yi_xi, double *w, double *next_w, double nt, double c, int batch_size, unsigned int feature_size) {
+
     int i=blockIdx.x*blockDim.x+threadIdx.x;
     if (i < feature_size) {
         next_w[i] = w[i] - nt*c*w[i] + (nt/batch_size)*yi_xi[i];
@@ -116,10 +117,8 @@ void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vec
         unsigned int idx = rand() % (label.size() - batch_size);
 
 
-
         copy_batch<<<ceil(batch_size*feature_size/512.0), 512>>>(ka_data, xi, idx, feature_size, batch_size);
         
-
 
         select_samples<<<ceil(batch_size/512.0), 512>>>(xi, w, feature_size, idx, ka_label, batch_size);
 
@@ -127,53 +126,18 @@ void SVMClassifier::fit(thrust::device_vector<double> & data, thrust::device_vec
         reduce_by_samples<<<ceil(feature_size/512.0), 512>>>(yi_xi, xi, batch_size, feature_size, idx, ka_label);
 
 
-
         update_w<<<ceil(feature_size/512.0), 512>>>(yi_xi, w, next_w, nt, c, batch_size, feature_size);
 
 
-
         copy_array<<<ceil(feature_size/512.0), 512>>>(w, next_w, feature_size);
-        // int *h_c;
-        // h_c = (int *)malloc(batch_size*sizeof(int));
-        // cudaMemcpy(h_c, ka_label._array, batch_size*sizeof(int), cudaMemcpyDeviceToHost);
-        // for(unsigned int i = 0; i < batch_size; i++) {
-        //     cout << "h_c["<<i+idx<<"] = " << h_c[i+idx] << endl;
-        // }
-
-        // double *h_a;
-        // h_a = (double *)malloc(batch_size*feature_size*sizeof(double));
-        // cudaMemcpy(h_a, xi, batch_size*feature_size*sizeof(double), cudaMemcpyDeviceToHost);
-        // for(unsigned int i = 0; i < batch_size*feature_size; i++) {
-        //     cout << "h_a["<<i<<"] = " << h_a[i] << endl;
-        // }
-
-        // double *h_b;
-        // h_b = (double *)malloc(feature_size*sizeof(double));
-        // cudaMemcpy(h_b, yi_xi, feature_size*sizeof(double), cudaMemcpyDeviceToHost);
-        // for(unsigned int i = 0; i < feature_size; i++) {
-        //     cout << "h_b["<<i<<"] = " << h_b[i] << endl;
-        // }
-
-        //cudaMalloc((void **)&d_a,150*sizeof(float));
-        //fooKernel<<<3, 51>>>(ka_data, 23);
-        //cudaMemcpy(h_a, xi, batch_size*feature_size*sizeof(double), cudaMemcpyDeviceToHost);
-        
-        // cudaMemcpy(h_a, ka_data._array, batch_size*feature_size*sizeof(double), cudaMemcpyDeviceToHost);
-        
-        // for(unsigned int i = 0; i < batch_size*feature_size; i++) {
-        //     cout << "h_a["<<i<<"] = " << h_a[i] << endl;
-        // }
 
     }
+
     // double *h_b;
     // h_b = (double *)malloc(feature_size*sizeof(double));
     // cudaMemcpy(h_b, w, feature_size*sizeof(double), cudaMemcpyDeviceToHost);
     // for(unsigned int i = 0; i < feature_size; i++) {
     //     cout << "w["<<i<<"] = " << h_b[i] << endl;
-    // }
-
-    // for(unsigned int i = 0; i < w.size(); i++) {
-    //     cout << "w" << i << " = " << w[i] << endl;
     // }
 
     cudaFree(xi);

@@ -13,9 +13,9 @@
 
 using namespace std;
 
-void set_envs(string & data_path, double *c, unsigned int *samples_limit, unsigned int *epochs, unsigned int *batch_size, unsigned int *train_size, unsigned int *num_iterations) {
+void set_envs(string & data_path, double *c, unsigned int *samples_limit, unsigned int *epochs, unsigned int *batch_size, unsigned int *train_size, unsigned int *num_iterations, unsigned int *positive_class) {
     
-    char *data_path_env, *c_env, *samples_limit_env, *epochs_env, *batch_size_env, *train_size_env, *num_iterations_env;
+    char *data_path_env, *c_env, *samples_limit_env, *epochs_env, *batch_size_env, *train_size_env, *num_iterations_env, *positive_class_env;
 
     data_path_env = getenv ("DATA_PATH");
     if(data_path_env != NULL) {
@@ -51,6 +51,11 @@ void set_envs(string & data_path, double *c, unsigned int *samples_limit, unsign
     if(num_iterations_env != NULL) {
         *num_iterations = atoi(num_iterations_env);
     }
+
+    positive_class_env = getenv ("POSITIVE_CLASS");
+    if(positive_class_env != NULL) {
+        *positive_class = atoi(positive_class_env);
+    }
 }
 
 int main(int argc, char *argv[]) {
@@ -67,8 +72,9 @@ int main(int argc, char *argv[]) {
     unsigned int batch_size = 10;
     unsigned int train_size = 5;
     unsigned int num_iterations = 5;
+    unsigned int positive_class = 1;
 
-    set_envs(data_path, &c, &samples_limit, &epochs, &batch_size, &train_size, &num_iterations);
+    set_envs(data_path, &c, &samples_limit, &epochs, &batch_size, &train_size, &num_iterations, &positive_class);
 
     cout << "Reading and parsing data: " << endl;
 
@@ -78,7 +84,7 @@ int main(int argc, char *argv[]) {
     
     random_shuffle(h_data.begin(), h_data.end());
 
-    vector<double> h_labels = set_labels(h_data);
+    vector<double> h_labels = set_labels(h_data, positive_class);
 
     cout << "Done " << endl;
 

@@ -55,7 +55,7 @@ vector<vector<double>> read_data(const char * filename, const unsigned int data_
     return data;
 }
 
-vector<double> set_labels(vector<vector<double>> & data) {
+vector<double> set_labels(vector<vector<double>> & data, unsigned int positive_class) {
     
     vector<double> labels;
 
@@ -63,7 +63,7 @@ vector<double> set_labels(vector<vector<double>> & data) {
     
     for (unsigned int i = 0; i < data.size(); i++) {
         
-        if (data[i][data[i].size()-1] == 1) {
+        if (data[i][data[i].size()-1] == positive_class) {
             labels.push_back(1);
             total+=1;
 
