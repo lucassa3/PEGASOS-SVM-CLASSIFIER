@@ -2,7 +2,7 @@
 Implementation of a support vector machine classifier using primal estimated sub-gradient solver in C++
 
 ## About
-This project was about building a Suport Vector Machine binary classifier from scratch using the methods described in [this article](https://www.cs.huji.ac.il/~shais/papers/ShalevSiSrCo10.pdf), and tweaking it to a mini batch version that, in theory, would benefit from the massive parallelizing available for GPU devices.
+This project was about building a Suport Vector Machine binary classifier from scratch using the methods described in [this paper](https://www.cs.huji.ac.il/~shais/papers/ShalevSiSrCo10.pdf), and tweaking it to a mini batch version that, in theory, would benefit from the massive parallelizing available for GPU devices.
 
 Two main SVM dinary classifiers were then built for comparison purposes, a sequential based pegasos basic algorithm described in section 2.1 of the article, and a mini-batch version described in section 2.3. The sequential version trains with data on CPU, while the mini-batch version trains with data natively in GPU using CUDA kernels. There are also two other experimental versions using CUDA THRUST API on ohter_versions folder, though be aware that they are not totally completed/optimized, and therefore wont be covered in the scope of this document.
 
@@ -35,12 +35,14 @@ You can use the following environment variables when running the code:
 * EPOCHS - Number of epochs the training part will run;
 * BATCH_SIZE - The desired size of your batch (ONLY AVAILABLE IN MINI BATCH ALGORITHM) (Default: 10);
 * TRAIN_SIZE - Percentage of the dataset allocated for training (0-1) (Default: 0.8);
-* NUM_ITERATIONS - Number of times the algorithm will run, good to mitigate some weird results due to bad seed, and return mean accuracy of all iterations (Default: 10).
+* NUM_ITERATIONS - Number of times the algorithm will run, good to mitigate some weird results due to bad seed, and return mean accuracy of all iterations (Default: 10);
+* POSITIVE_CLASS - Class whose samples are gonna be labeled as positive, while the rest of the samples will be labeled negative (Default: 1).
 
 Example:
 ```
 $  DATA_PATH=../datasets/mnist_train.csv C=0.0001 EPOCHS=500000 BATCH_SIZE=200 TRAIN_SIZE=0.8 NUM_ITERATIONS=20 ./main
 ```
+
 
 ## Results:
 
@@ -124,7 +126,7 @@ GPU version:
 * mean accuracy = 0.667627;
 * time/iteration = 39.42 seconds;
 
-This dataset starts to be more interesting to the gpu because it has lots of samples and does not limit how much of them can be inserted in a batch. for that reason, and the fact that is has 50 features, considerably more than both datasets before, it performs good in gpu. However its still not enough to beat cpu on time ellapsed. Both algorithms had a hard time getting closer to scikits results, and for time limiting reasons, i decided not to push that far, but it could converge to scikits results with enough time and better parameters.
+This dataset starts to be more interesting to the gpu because it has lots of samples and does not limit how much of them can be inserted in a batch. for that reason, and the fact that is has 50 features, considerably more than both datasets before, it performs good in gpu. However its still not enough to beat cpu on time ellapsed. Both algorithms had a hard time getting closer to scikits results in a suitable time for me to write this report, and for time limiting reasons, i decided not to push that far, but it could converge to scikits results with enough time and better parameters.
 
 
 #### Mnist class 5 Dataset:
@@ -145,20 +147,28 @@ GPU version:
 
 The last result, mnist dataset, was another one that converged pretty quickly to an approximate result. Even though it still took more time to run on the gpu, its possible to see the pattern that the more features it has, the time difference between both version gets shorter, up to a point where datasets with thousand of features will run better on the mini-batch gpu version.
 
+### 3. Cuda implementation versus paper result:
 
+Finally, its important to check if my implementation matched accruracy-wise the results presented by the paper i based on my implementation (the one cited in the beginning nof this document). There are two datasets i've used that the paper also uses (mnist and covtype), and this will be the ones i'll be comparing. The results below are the best results i've got using the same lambda (c) parameter and big batches and epochs.
 
+#### Mnist class 8 Dataset:
 
+Paper results:
+`C=0.0000167`
+* accuracy = 0.94;
 
+GPU version:
+`POSITIVE_CLASS=8 C=0.0000167 EPOCHS=1000000 BATCH_SIZE=70 TRAIN_SIZE=0.8 NUM_ITERATIONS=5`
+* best accuracy = 0.943583;
+* time/iteration = 125.03 seconds;
 
+#### Covtype class 1 Dataset:
 
+Paper results:
+`C=0.000001`
+* accuracy = 0.768;
 
-
-
-
-
-
-
-
-
-
-
+GPU version:
+`POSITIVE_CLASS=1 C=0.000001 EPOCHS=1000000 BATCH_SIZE=100 TRAIN_SIZE=0.8 NUM_ITERATIONS=5`
+* best accuracy = 0.733507;
+* time/iteration = 24 seconds;
