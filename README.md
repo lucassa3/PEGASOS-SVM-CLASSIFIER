@@ -56,7 +56,7 @@ The four graphics below represent time per number of samples of each database i 
 ![Alt text](imgs/charts.png?raw=true "Title")
 
 
-On the CPU sequential version (marked in red), since there is not the batch concept, the number of samples directly reflects the number of epochs the alogrithm used, limited to one single sample used per epoch. On the GPU mini-batch version (marked in blue, the number of samples are calculated using always a fixed epoch number (10000) multiplied by the number of samples contained in a batch, and increascing only the batch number at each data point.
+On the CPU sequential version (marked in red), since there is not the batch concept, the number of samples directly reflects the number of epochs the alogrithm used, limited to one single sample used per epoch. On the GPU mini-batch version (marked in blue) the number of samples are calculated using always a fixed epoch number (10000) multiplied by the number of samples contained in a batch, and increascing only the batch number at each data point.
 
 As the charts represent, training with a small number of used samples yields a better performance on the CPU side, since the data doesnt have to be passed on to the gpu. However, as the number of samples used increase, the gpu starts compensating its slow data copy with the ability to iterate each weight at the same time, and process the whole batch in parallel as well. MNIST is clearly one that takes advantage of Mini-batch processing, given its large feature set (one per pixel in a 28x28 image).
 
@@ -66,7 +66,7 @@ OBS2: Time accounts both fit and predict steps.
 
 ### 2. Accuracy:
 
-The main point of a classifier is to have a solid accuracy over a classification test. The tests below tries to get to approximate accuracy results compared to scikit python SVM version. Then it compares both the performance of the cpu and gpu accuracies against the time they took to get to the approximate results of scikits tool. There were no scientific method to determine the regularization parameters, batch size or epochs in any of these datasets, other than reading some other solutions online and seeing what works best. Be aware that you might get similar results with different parameters.
+The main point of a classifier is to have a solid accuracy over a classification test. The tests below tries to get to approximate accuracy results compared to scikit python SVM version. Then it compares both the performance of the cpu and gpu accuracies against the time they took to get to the approximate results of scikits tool. There were no scientific method to determine the regularization parameters, batch size or epochs in any of these datasets, other than reading some other solutions online, performing some accuacy/epochs tests and seeing what works best. Be aware that you might get similar results with different parameters.
 
 The class number beside every dataset name has to do with the class number I chose to be the positive sample, and all others to be negative ones. This has to be done once we are talking about a binary classifier, and therefore can't handle multiple classes.
 
